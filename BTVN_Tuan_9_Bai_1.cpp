@@ -1,83 +1,159 @@
-#include <iostream>
-#include <string>
+#include<iostream>
+#include<ctime>
+
 using namespace std;
 
-struct File {
-    string name;       
-    float size;    
-    string time;       
-    File* next;        
+struct NODE 
+{
+    string name;
+    string address;
+    float size;
+    char* time;
+    NODE* link;
 };
 
-struct FileList {
-    File* head;        
-    FileList() : head(NULL) {}
-
-    void addFile(const string& name, float size, const string& time) {
-        File* newFile = new File{name, size, time, NULL};
-        
-        if (!head || time < head->time) { 
-            newFile->next = head;
-            head = newFile;
-        } else {
-            File* current = head;
-            while (current->next && current->next->time < time) {
-                current = current->next;
-            }
-            newFile->next = current->next;
-            current->next = newFile;
-        }
-    }
-    
- 
-    float calculateKich_thuoc_file() const {
-        float Kich_thuoc_file = 0;
-        File* current = head;
-        while (current) {
-            Kich_thuoc_file += current->size;
-            current = current->next;
-        }
-        return Kich_thuoc_file;
-    }
-    
- 
-    void removeSmallestFile() {
-        if (!head) return; 
-        
-        File *prev = NULL, *smallestPrev = NULL;
-        File *current = head, *smallest = head;
-        
-    
-        while (current) {
-            if (current->size < smallest->size) {
-                smallest = current;
-                smallestPrev = prev;
-            }
-            prev = current;
-            current = current->next;
-        }
-        if (smallestPrev) {
-            smallestPrev->next = smallest->next;
-        } else {
-            head = head->next;
-        }
-        delete smallest;
-    }
-
-
-    void backupToUSB() {
-        const float USB_CAPACITY = 32LL * 1024 * 1024 * 1024;
-        while (calculateKich_thuoc_file() > USB_CAPACITY) {
-            removeSmallestFile();
-        }
-    }
-
- 
-    void displayFiles() const {
-        File* current = head;
-        while (current) {
-            cout << "File: " << current->name << ", Size: " << current->size << " bytes, time: " << current->time << endl;
-            current = current->next;
-        }
-    }
+struct LIST 
+{
+    NODE* first;
+    NODE* last;
 };
+void LIST_INIT(LIST* d) 
+{
+    d->first = d->last = NULL; 
+
+}
+
+
+NODE* MAKE_NODE(string name, string adr, float s, char* dt) 
+{
+    NODE* p = new NODE; 
+    if (p == NULL) return NULL;
+    p->name = name;
+    p->address = adr;
+    p->size = s;
+    p->time = dt;
+    cout << p->time;
+    p->link = NULL;
+
+    return p; 
+}
+
+
+void ADD_NODE(LIST* ds, NODE* p)
+{
+    if (ds->first == NULL) 
+    {   // Danh sách rỗng
+        ds->first = ds->last = p; 
+    }
+    else
+    {
+        ds->last->link = p; 
+        ds->last = p;      
+    }
+}
+
+
+void ATTACH_NODE(LIST* lDT, string n, string adr, float s, char* dt)
+{
+    NODE* pDT = MAKE_NODE(n, adr, s, dt);
+    if (pDT == NULL) return; 
+    ADD_NODE(lDT, pDT); 
+}
+
+
+NODE* PICK(LIST* C, NODE* T)
+{
+    T = C->first;
+    for(;;)
+    {
+        int check = 0; 
+        cout << T->name;
+        cin >> check;
+        if(check == 0) break;
+    }
+
+    return T;
+}
+
+
+void COPY(LIST* D, LIST* C, NODE* T)
+{
+    PICK(C, T);
+    D->last->link = T;
+    D->last = T;
+}
+
+
+float CAL(LIST* D)
+{
+    float a = D->first->size;
+    NODE* p = D->first->link;
+    for(;;)
+    {
+        if(p != NULL)
+        {
+            a = a + p->size;
+            p = p->link;
+        }
+        else break;
+    }
+    
+    return a;
+}
+
+// Hàm sắp xếp lại danh sách theo kích thước
+void SORT_BY_SIZE(LIST* D, NODE* T)
+{
+    int count = 0;
+    T = D->first;
+    for(;;)
+    {
+        if(T != NULL)
+        {
+            count++;
+            T = T->link;
+        }
+        else break;
+    }
+    T = D->first;
+    for(int i = 0; i < count; i++)
+    {
+        for(int j = i + 1; j < count; j++)
+        {
+            if(T->size > T->link->size)
+            {
+                D->first = T->link;
+                T->link = T->link->link;
+                D->first->link = T;
+            }
+        }
+    }
+}
+
+void SOL(LIST* D)
+{
+    float a;
+    a = CAL(D);
+    for(;;)
+    {
+        if(a > 32) 
+        {
+            NODE* p = D->first;
+            D->first = D->first->link;
+
+            delete p;
+        }
+        else break;
+    }
+}
+
+int main()
+{
+    time_t now = time(0);
+    char* dt = ctime(&now);
+
+    LIST D;
+    LIST C;  
+    
+    return 0;
+}
