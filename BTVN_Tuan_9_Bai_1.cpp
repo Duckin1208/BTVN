@@ -64,7 +64,7 @@ void ATTACH_NODE(LIST* lDT, string n, string adr, float s, char* dt)
 NODE* PICK(LIST* C, NODE* T)
 {
     T = C->first;
-    for(;;)
+    while(1)
     {
         int check = 0; 
         cout << T->name;
@@ -88,33 +88,26 @@ float CAL(LIST* D)
 {
     float a = D->first->size;
     NODE* p = D->first->link;
-    for(;;)
-    {
-        if(p != NULL)
+    while(p != NULL)
         {
             a = a + p->size;
             p = p->link;
         }
-        else break;
-    }
-    
     return a;
 }
 
-// Hàm sắp xếp lại danh sách theo kích thước
-void SORT_BY_SIZE(LIST* D, NODE* T)
-{
+void SORT_BY_SIZE(LIST* D, NODE* T){
     int count = 0;
     T = D->first;
-    for(;;)
-    {
-        if(T != NULL)
+     while ((T != NULL))
+     {
         {
             count++;
             T = T->link;
         }
-        else break;
-    }
+        
+     }
+    
     T = D->first;
     for(int i = 0; i < count; i++)
     {
@@ -129,7 +122,6 @@ void SORT_BY_SIZE(LIST* D, NODE* T)
         }
     }
 }
-
 void SOL(LIST* D)
 {
     float a;
